@@ -1,0 +1,76 @@
+		Tema 2 - ACS Cat Invasion
+
+	Timp de implementare: 10 ore
+
+	Task 1-Simple cipher
+->Pentru acest task parcurg caracter cu caracter vectorul in care se afla string-ul care trebuie criptat
+si verific pentru fiecare dintre acestea daca adunate cu step-ul dat sunt mai mici ca ultima litera din 
+alfabet (cu litera mare).In acest caz, doar adun step-ul la caracterul respectiv si il pun in sirul final.
+Altfel, inseamna ca suma imi depaseste ultima litera din alfabet(cu litera mare, adica Z) si atunci
+trebuie sa continui de la ineputul alfabetului.Deci va trebui sa adun 65 (corespondentul lui 'A' in ASCII),
+adun step-ul si scad 91 (corespondentul lui 'Z' in ASCII). 
+->Ca sa-mi pun in vectorul cu measjul criptat imi tin un contor pe stiva pentru a putea parcurge vectorul
+cu mesajul plain si vectorul cu mesajul criptat.
+
+	Task 2-Points
+2.1-Points distance
+
+->Am sesizat ca mereu o diferenta dintre punctele Xsau Y este 0, astfel am putut sa simplific formula
+care imi calculeaza distanta dintre doua puncte.Asadar, in loc sa fac radical din patratul diferentelor
+coordonatelor, distanta va fi echivalenta doar cu diferenta acelor coordonate care nu da 0.
+->Implementarea am realizat-o prin realizarea celor 2 diferente ale coordonatelor { (y1-y0) si (x1 - x0) }.
+Diferenta care nu da 0 va fi pusa ca rezultat.Pentru a accesa elementele din structura s-a tinut cont
+de dimensiunea structurii care este 4 bytes si a elementelor din structura care au 2 bytes fiecare.
+
+2.2-Road
+
+->Pentru a calcula distantele dintre puncte este acelasi principiu ca la 2.1.
+->Pentru a accesa elementele din vectorul de structuri o sa am un contor care porneste de la  0.Pentru 
+a accesa elementele X din structura doar adun la offset-ul vectorului 4*contor ( pentru ca structura are 4 bytes).
+Pentru elementele Y adun la acel offset 4*contor + 2 pentru a sari de cei 2 bytes reprezentati prima data de X in 
+structura.De acelasi contor inmultit cu 4 (pentru ca e vector de int-uri) ma folosesc sa pun in vectorul de rezultate. 
+
+2.3-Is square
+
+->Ideea principala este de a folosi o metoda pentru a calcula radicalul care, daca numarul nu este patrat perfect,
+radicalul sa fie cu o eroare semnificativa, astfel incat ridicat la patrat sa nu dea numarul de la care am plecat.
+->Calculul radicalului: se ia un contor care incepe de la 1 si va creste 2 cate 2 la fiecare intrare in label-ul aferent.
+La fiecare iteratie scad din numarul pe care vreau sa-l verific contorul pana cand ajung pe numere negative.
+Numarul de iteratii va fi radicalul meu.
+->Daca radicalul ridicat la patrat da numarul de la care am plecat, inseamna ca acesta este patrat perfect si pun 1
+in vectorul de rezultate.Altfel, pun 0.
+
+	Task 3-Beaufort Encryption
+
+	Regula pentru criptare: avem 2 cazuri.
+-Caz 1:Daca caracterul din textul plain este mai mic  sau eegalca cel corespunzator din key ( D < F) atunci caracterul
+criptat va fi caracterul din cheie minus cel din plain (practic step-ul) plus primul caracterul din alfabet ('A' <=> 65 in ASCII).
+Caz 2:  Daca caracterul din textul plain este mai mare ca cel corespunzator din key (D > C) atunci caracterul criptat va
+fi caracterul din cheie minus cel din plain plus 91 (pentru a incepe de la finalul aflabetului).
+->Completarea vectorului cheie: am un contor care merge de la 0 la lungimea cuvantului cheie(cont 1).Cu un alt contor pornesc de
+la lungimea cuvantului cheie pana la lungimea textului plain(cont 2). Astfel, parcurg vectorul cheie pe care il vreau completat
+cu cont 2 si completez cu caracterul corespunzator din prima parte a vectorului cheie(cu ajutorul lui cont 1) care e deja completat.
+Astfel, pun caracter cu caracter pana cand ajung sa mai pun inca odata cuvantul cheie in vector, iar cand ajung la acel moment
+resetez cont1.
+->Dupa ce am vectorul completat pot sa parcurg vectorii, verific cele 2 cazuri si calculez caracterele pentru sirul criptat.
+
+	Task 4-Spiral Encryption
+
+	Conditii pentru parcurgerea in spirala:
+
+-Conditie initiala (primul while) : (i + 1) <= n/2; La final incrementez i si j.
+Impartirea la 2 o fac prin shiftarea la dreapta.
+-Conditie latura de sus: j < n - 1 - i; Cresc j
+-Conditie latura din dreapta: i < j; Cresc i
+-Conditie latura de jos: j > n - 1 - i; Scad j
+-Conditie latura din stanga: i > j; Scad i
+
+->Pentru conditiile de mai sus imi declar niste variabile in section .data pentru a salva aceste limite.
+->Accesarea elementelor din matrice se va face prin adunarea la offset-ul matricei a rezultatului i*N + j.
+->Adun la caracterul din textul plain elementul corespunzator din matrice si il pun in vectorul final.
+
+	Caz special: numarul liniilor si al coloanelor este impar (ex: N = 3) deci elementul din mijlocul matricei trebuie tratat separat
+->La final verific daca N este impar (shiftez la dreapta si dupa din nou la stanga, iar daca acesta este impar inseamna ca prin
+aceste 2 operatii nu se mai ajunge la numarul initial).
+->Daca N este impar, imi iau elementul din centrul matricei care se afla la offsetul N^2/2 si il pun la finalul vectorului criptat dupa ce adun
+caracterul din plain (pentru vectori se afla la offsetul N^2 -1  ptc am inceput indexarea de la 0).
